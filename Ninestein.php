@@ -23,5 +23,15 @@
  * @link      https://github.com/BIGjuevos/ninestein
  */
 class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
+  private $_db;
 
+  public function onLoad() {
+    $this->_db = new Phergie_Plugin_Ninestein_Database();
+
+    $this->loadSettings();
+  }
+
+  private function loadSettings() {
+    //pull settings out of global array
+  }
 }
