@@ -8,5 +8,11 @@
  * @link      https://github.com/BIGjuevos/ninestein
  */
 class Phergie_Plugin_Ninestein_Database {
+  private $_db;
 
+  private $_config;
+
+  public function __construct($config) {
+    $this->_config = $config;
+  }
 }
