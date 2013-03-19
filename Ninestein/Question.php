@@ -8,5 +8,5 @@
  * @link      https://github.com/BIGjuevos/ninestein
  */
 class Phergie_Plugin_Ninestein_Question {
-
+  private $_text;
 }
