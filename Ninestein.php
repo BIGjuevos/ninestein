@@ -27,9 +27,23 @@ class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
   private $_db;
 
   public function onLoad() {
+    //assert we have all we need
+    $this->assertDependencies();
+
+    //import global settings into scope
     $this->loadSettings();
 
+    //start up database connection
     $this->_db = new Phergie_Plugin_Ninestein_Database($this->_db_config);
+  }
+
+  public function onPrivmsg() {
+    //do some stuff depending on our mode
+  }
+
+  private function assertDependencies() {
+    if ( extension_loaded('mysqli') )
+      throw new Phergie_Plugin_Ninestein_Exception("mysqli must be installed to use this plugin.");
   }
 
   private function loadSettings() {
