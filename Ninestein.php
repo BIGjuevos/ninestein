@@ -34,6 +34,7 @@ class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
   private $_mode;
   
   private $_question;
+  private $_hint;
   
   private $_hintTime1;
   private $_hintTime2;
@@ -58,11 +59,12 @@ class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
     
     if ( $this->_mode == self::MODE_WAITING && !is_null($this->_hintTime1) && $time >= $this->_hintTime1 ) {
       //issue first hint
-      $this->doPrivMsg($this->_config['channel'], $this->_question['hint'] );
+      $this->_hint = Phergie_Plugin_Ninestein_Message::getHint($this->_question['answer']);
+      $this->doPrivMsg($this->_config['channel'], $this->_hint );
       $this->_hintTime1 = null;
     } else if ( $this->_mode == self::MODE_WAITING && !is_null($this->_hintTime2) && $time >= $this->_hintTime2 ) {
       //issue second hint
-      $this->doPrivMsg($this->_config['channel'], Phergie_Plugin_Ninestein_Message::getHint($this->_question['answer']) );
+      $this->doPrivMsg($this->_config['channel'], Phergie_Plugin_Ninestein_Message::getHint($this->_question['answer'], $this->_hint) );
       $this->_hintTime2 = null;
     } else if ( $this->_mode == self::MODE_WAITING && !is_null($this->_doneTime) && $time >= $this->_doneTime ) {
       //issue second hint
@@ -95,7 +97,9 @@ class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
         }
         break;
       default:
-        //did they anser the question?
+        if (strtolower($this->getEvent()->getArgument(1)) == strtolower($this->_question['answer'])) {
+          $this->correct($this->getEvent());
+        }
     }
   }
   
@@ -112,6 +116,13 @@ class Phergie_Plugin_Ninestein extends Phergie_Plugin_Abstract {
     $this->doPrivMsg($this->_config['channel'], "Answer: " . $this->_question['answer'] );
     
     $this->_nextTime = time() + 5;
+  }
+  
+  private function correct(Phergie_Event_Request $ev) {
+    $nick = $ev->getNick();
+    $this->doPrivMsg($this->_config['channel'], Phergie_Plugin_Ninestein_Message::getCorrect($nick) );
+    
+    $this->next();
   }
   
   private function next() {

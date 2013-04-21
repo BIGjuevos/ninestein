@@ -28,17 +28,30 @@ class Phergie_Plugin_Ninestein_Message {
     return $messages[array_rand($messages)];
   }
   
-  public static function getHint($answer) {
+  public static function getHint($answer, $last = "") {
     $parts = str_split($answer);
+    $lastParts = str_split($last);
     $response = "";
     
-    foreach ( $parts as $letter ) {
-      if ( $letter == " " ) {
-        $response .= " ";
-      } else if ( rand(1,3) == 2 ) {
-        $response .= $letter;
+    foreach ( $parts as $index => $letter ) {
+      if ( $last == "" ) {
+        if ( $letter == " " ) {
+          $response .= " ";
+        } else if ( rand(1,5) == 2 ) {
+          $response .= $letter;
+        } else {
+          $response .= "*";
+        }
       } else {
-        $response .= "*";
+        if ( $lastParts[$index] != "*" ) {
+          $response .= $lastParts[$index];
+        } else if ( $letter == " " ) {
+          $response .= " ";
+        } else if ( $lastParts[$index] == "*" && rand(1,3) == 2 ) {
+          $response .= $letter;
+        } else {
+          $response .= "*";
+        }
       }
     }
     
@@ -73,6 +86,16 @@ class Phergie_Plugin_Ninestein_Message {
     $messages = array(
         "Wow you suck at this.  I get the points. Sit here and study the correct answer.",
         "Were you sleeping?  I get the points. Sit here and study the correct answer.",
+    );
+    
+    return $messages[array_rand($messages)];
+  }
+  
+  public static function getCorrect($n) {
+    $messages = array(
+        "Will someone get $n a prize?  He just got a question right!",
+        "About time $n.",
+        "Took you long enough $n!",
     );
     
     return $messages[array_rand($messages)];
