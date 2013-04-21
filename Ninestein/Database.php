@@ -16,13 +16,13 @@ class Phergie_Plugin_Ninestein_Database {
     //ensure our configuration is valid
     $this->_config = $config;
 
-    if ( !$this->_config['ninestein.db.username'] )
+    if ( !$this->_config['username'] )
       throw new Phergie_Plugin_Ninestein_Exception("database username not set.  Please set 'ninestein.db.username'");
-    if ( !$this->_config['ninestein.db.password'] )
+    if ( !$this->_config['password'] )
       throw new Phergie_Plugin_Ninestein_Exception("database password not set.  Please set 'ninestein.db.password'");
-    if ( !$this->_config['ninestein.db.hostname'] )
+    if ( !$this->_config['hostname'] )
       throw new Phergie_Plugin_Ninestein_Exception("database hostname not set.  Please set 'ninestein.db.hostname'");
-    if ( !$this->_config['ninestein.db.name'] )
+    if ( !$this->_config['name'] )
       throw new Phergie_Plugin_Ninestein_Exception("database name not set.  Please set 'ninestein.db.name'");
 
     //connect
@@ -32,12 +32,16 @@ class Phergie_Plugin_Ninestein_Database {
     if ( !$this->_db )
       throw new Phergie_Plugin_Ninestein_Exception('unable to connect to database with provided credentials.');
   }
+  
+  public function getDb() {
+    return $this->_db;
+  }
   private function connect() {
     $this->_db = new mysqli(
-      $this->_config['ninestein.db.hostname'],
-      $this->_config['ninestein.db.username'],
-      $this->_config['ninestein.db.password'],
-      $this->_config['ninestein.db.name']
+      $this->_config['hostname'],
+      $this->_config['username'],
+      $this->_config['password'],
+      $this->_config['name']
     );
   }
 }

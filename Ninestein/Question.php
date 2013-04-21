@@ -8,43 +8,19 @@
  * @link      https://github.com/BIGjuevos/ninestein
  */
 class Phergie_Plugin_Ninestein_Question {
-  private $_id;
-
-  private $_question;
-
-  private $_categoryId;
-
-  private $_story;
-
-  public function setCategoryId ( $categoryId ) {
-    $this->_categoryId = $categoryId;
-  }
-
-  public function getCategoryId () {
-    return $this->_categoryId;
-  }
-
-  public function setId ( $id ) {
-    $this->_id = $id;
-  }
-
-  public function getId () {
-    return $this->_id;
-  }
-
-  public function setQuestion ( $question ) {
-    $this->_question = $question;
-  }
-
-  public function getQuestion () {
-    return $this->_question;
-  }
-
-  public function setStory ( $story ) {
-    $this->_story = $story;
-  }
-
-  public function getStory () {
-    return $this->_story;
+  public static function fetch(mysqli $db) {
+    //do a fast random selection
+    $sql = "SELECT *
+            FROM question AS r1 JOIN
+              (SELECT (RAND() *
+                (SELECT MAX(id)
+                  FROM question)) AS id)
+                    AS r2
+           WHERE r1.id >= r2.id
+           ORDER BY r1.id ASC
+           LIMIT 1";
+    
+    $item = $db->query($sql);
+    return $item->fetch_assoc();
   }
 }
