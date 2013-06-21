@@ -21,6 +21,10 @@ class Phergie_Plugin_Ninestein_Question {
            LIMIT 1";
     
     $item = $db->query($sql);
+		if ( !$item ) {
+			$db->ping();
+			$item = $db->query($sql);
+		}
     return $item->fetch_assoc();
   }
 }

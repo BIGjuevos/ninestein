@@ -17,7 +17,7 @@ class Phergie_Plugin_Ninestein_Message {
         "I want to play some trivia, don't you?!",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x039" . $messages[array_rand($messages)] . "\x15";
   }
   
   public static function getAsk() {
@@ -25,7 +25,7 @@ class Phergie_Plugin_Ninestein_Message {
         "Here Comes Another Question",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x0311" . $messages[array_rand($messages)] . "\x15";
   }
   
   public static function getHint($answer, $last = "") {
@@ -37,7 +37,7 @@ class Phergie_Plugin_Ninestein_Message {
       if ( $last == "" ) {
         if ( $letter == " " ) {
           $response .= " ";
-        } else if ( rand(1,5) == 2 ) {
+        } else if ( rand(1,4) == 2 ) {
           $response .= $letter;
         } else {
           $response .= "*";
@@ -47,7 +47,7 @@ class Phergie_Plugin_Ninestein_Message {
           $response .= $lastParts[$index];
         } else if ( $letter == " " ) {
           $response .= " ";
-        } else if ( $lastParts[$index] == "*" && rand(1,3) == 2 ) {
+        } else if ( $lastParts[$index] == "*" && rand(1,2) == 2 ) {
           $response .= $letter;
         } else {
           $response .= "*";
@@ -79,23 +79,34 @@ class Phergie_Plugin_Ninestein_Message {
         "You have $x seconds before you must answer.",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x0311" . $messages[array_rand($messages)] . "\x15";
   }
   
   public static function getWrong() {
     $messages = array(
-        "Wow you suck at this.  I get the points. Sit here and study the correct answer.",
-        "Were you sleeping?  I get the points. Sit here and study the correct answer.",
+        "Wow you suck at this. Sit here and study the correct answer.",
+        "Were you sleeping? Sit here and study the correct answer.",
+				"How did you not know that?",
+				"I thought you were supposed to be smart!",
+				"Well, at least I knew the answer to that",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x034" . $messages[array_rand($messages)] . "\x15";
   }
   
-  public static function getCorrect($n) {
+  public static function getCorrect($n, $p) {
     $messages = array(
-        "Will someone get $n a prize?  He just got a question right!",
-        "About time $n.",
-        "Took you long enough $n!",
+        "Will someone get $n a prize?  He just got a question right! How about $p points?",
+        "About time $n. You get a measly $p points.",
+        "Took you long enough $n! Here's $p pity points.",
+    );
+    
+    return "\x033" . $messages[array_rand($messages)] . "\x15";
+  }
+
+  public static function getScore($n, $alltime, $week) {
+    $messages = array(
+			"$n has $week points this week, and $alltime all-time!",
     );
     
     return $messages[array_rand($messages)];
@@ -109,7 +120,7 @@ class Phergie_Plugin_Ninestein_Message {
         "OK, fine I get you're point, I'm stopping!",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x034" . $messages[array_rand($messages)] . "\x15";
   }
   
   public static function getNoCanDo() {
@@ -119,6 +130,6 @@ class Phergie_Plugin_Ninestein_Message {
         "Ya, ummm, no.  Not gonna happen.",
     );
     
-    return $messages[array_rand($messages)];
+    return "\x034" . $messages[array_rand($messages)] . "\x15";
   }
 }

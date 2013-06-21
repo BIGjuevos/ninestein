@@ -37,4 +37,40 @@ class Phergie_Plugin_Ninestein_User {
   public function getNick () {
     return $this->_nick;
   }
+
+	public static function getIdByNick($nick, $db) {
+		$sql = "
+			SELECT * FROM user
+			WHERE nick = '$nick' LIMIT 1";
+
+    $user = $db->getDb()->query($sql);
+		if ( !$user ) {
+			$db->getDb()->ping();
+			$user = $db->getDbh()->query($sql);
+		}
+		if ( $user->num_rows > 0 ) {
+			$vals = $user->fetch_assoc();
+
+			$model = new self();
+			$model->setNick($vals['nick']);
+			$model->setId($vals['id']);
+			$model->setFirstSeen($vals['first_seen']);
+
+			return $model;
+		} else {
+			return false;
+		}
+	}
+
+	public static function create($nick, $db) {
+		$sql = "
+			INSERT INTO user VALUES(
+				NULL,
+				'{$nick}',
+				NULL)";
+
+		$db->q($sql);
+
+		return self::getIdByNick($nick, $db);
+	}
 }

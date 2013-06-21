@@ -32,10 +32,21 @@ class Phergie_Plugin_Ninestein_Database {
     if ( !$this->_db )
       throw new Phergie_Plugin_Ninestein_Exception('unable to connect to database with provided credentials.');
   }
+
+	/**
+	 * just execute a statement
+	 */
+	public function q($sql) {
+		//just force our connection alive
+		$this->_db->ping();
+
+		$this->_db->query($sql);
+	}
   
   public function getDb() {
     return $this->_db;
   }
+
   private function connect() {
     $this->_db = new mysqli(
       $this->_config['hostname'],

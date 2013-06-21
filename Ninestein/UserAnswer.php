@@ -16,6 +16,14 @@ class Phergie_Plugin_Ninestein_UserAnswer {
 
   private $_createdAt;
 
+	private $_core;
+
+	private $_points;
+
+	public function __construct($core) {
+		$this->_core = $core;
+	}
+
   public function setCorrect ( $correct ) {
     $this->_correct = $correct;
   }
@@ -48,4 +56,50 @@ class Phergie_Plugin_Ninestein_UserAnswer {
     return $this->_userId;
   }
 
+	public function setPoints($points) {
+		$this->_points = $points;
+	}
+
+	public function save() {
+		$sql = "
+			INSERT INTO user_answer VALUES(
+				NULL,
+				{$this->_userId},
+				{$this->_questionId},
+				{$this->_correct},
+				{$this->_points},
+				CURRENT_TIMESTAMP)";
+
+		$this->_core->getDb()->q($sql);
+	}
+
+	/**
+	 * @params int $duration in number of seconds ago
+	 */
+	public static function getScoreByNick($nick, $db, $duration = NULL) {
+		if ($duration != NULL) {
+			$durationWhere = "AND ua.created_at >= '" . date("Y-m-d H:i:s", time() - $duration) . "'";
+		} else {
+			$durationWhere = "";
+		}
+		$sql = "
+			SELECT SUM(ua.points) AS num
+			FROM user_answer ua
+			LEFT JOIN user u ON u.id = ua.user_id
+			WHERE u.nick = '$nick' $durationWhere
+			LIMIT 1";
+
+    $res = $db->getDb()->query($sql);
+		if ( !$res) {
+			$db->getDb()->ping();
+			$res = $db->getDb()->query($sql);
+		}
+
+		if (!$res) {
+			return 0;
+		} else {
+			$row = $res->fetch_assoc();
+			return $row['num'];
+		}
+	}
 }
